@@ -9,7 +9,7 @@
 #include "tag_base_type.h"
 
 //Up to eight card slots
-#define TAG_MAX_SLOT_NUM    8
+#define TAG_MAX_SLOT_NUM    99
 
 extern bool g_is_tag_emulating;
 
@@ -44,9 +44,9 @@ typedef struct {
  * This configuration can be preserved by persistently to Flash
  * 4 bytes a word, keep in mind the entire word alignment
  */
-#define TAG_SLOT_CONFIG_CURRENT_VERSION 8
+#define TAG_SLOT_CONFIG_CURRENT_VERSION 9
 // Intended struct size, for static assert
-#define TAG_SLOT_CONFIG_CURRENT_SIZE 68
+#define TAG_SLOT_CONFIG_CURRENT_SIZE 796
 
 typedef struct {
     //Basic configuration
