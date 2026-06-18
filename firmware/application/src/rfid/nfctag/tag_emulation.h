@@ -46,7 +46,7 @@ typedef struct {
  */
 #define TAG_SLOT_CONFIG_CURRENT_VERSION 9
 // Intended struct size, for static assert
-#define TAG_SLOT_CONFIG_CURRENT_SIZE 796
+#define TAG_SLOT_CONFIG_CURRENT_SIZE 8*99+4
 
 typedef struct {
     //Basic configuration
