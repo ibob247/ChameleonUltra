@@ -573,6 +573,13 @@ void tag_emulation_change_slot(uint8_t index, bool sense_disable) {
     tag_emulation_save_data();      // Save the data of the current card, if there is a change, if there is a change
     g_is_tag_emulating = false;     // Reset the logo position
     tag_emulation_set_slot(index);  // Update the index of the activated card slot
+
+    if (slotConfig.slots[index].enabled_hf && slotConfig.slots[index].tag_hf == TAG_TYPE_UNDEFINED) {
+        slotConfig.slots[index].tag_hf = TAG_TYPE_MIFARE_1024;
+        tag_emulation_factory_data(index, TAG_TYPE_MIFARE_1024);
+        tag_emulation_save_config();
+    }
+
     tag_emulation_load_data();      // Then reload the data of the card slot
     if (sense_disable) {
         // According to the configuration of the new card slot, the monitoring status of our update
@@ -605,6 +612,10 @@ bool tag_emulation_slot_is_enabled(uint8_t slot, tag_sense_type_t sense_type) {
 void tag_emulation_slot_set_enable(uint8_t slot, tag_sense_type_t sense_type, bool enable) {
     //Set the capacity of the corresponding card slot directly
     switch (sense_type) {
+        case TAG_SENSE_LF: {
+            slotConfig.slots[slot].enabled_lf = enable;
+            break;
+        }
         case TAG_SENSE_HF: {
             bool init_mf1k = enable && (slotConfig.slots[slot].tag_hf == TAG_TYPE_UNDEFINED);
 
@@ -616,12 +627,9 @@ void tag_emulation_slot_set_enable(uint8_t slot, tag_sense_type_t sense_type, bo
 
             if (init_mf1k) {
                 tag_emulation_factory_data(slot, TAG_TYPE_MIFARE_1024);
+                tag_emulation_save_config();
             }
 
-            break;
-        }
-        case TAG_SENSE_HF: {
-            slotConfig.slots[slot].enabled_hf = enable;
             break;
         }
         default:
