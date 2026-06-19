@@ -605,8 +605,19 @@ bool tag_emulation_slot_is_enabled(uint8_t slot, tag_sense_type_t sense_type) {
 void tag_emulation_slot_set_enable(uint8_t slot, tag_sense_type_t sense_type, bool enable) {
     //Set the capacity of the corresponding card slot directly
     switch (sense_type) {
-        case TAG_SENSE_LF: {
-            slotConfig.slots[slot].enabled_lf = enable;
+        case TAG_SENSE_HF: {
+            bool init_mf1k = enable && (slotConfig.slots[slot].tag_hf == TAG_TYPE_UNDEFINED);
+
+            if (init_mf1k) {
+                slotConfig.slots[slot].tag_hf = TAG_TYPE_MIFARE_1024;
+            }
+
+            slotConfig.slots[slot].enabled_hf = enable;
+
+            if (init_mf1k) {
+                tag_emulation_factory_data(slot, TAG_TYPE_MIFARE_1024);
+            }
+
             break;
         }
         case TAG_SENSE_HF: {
